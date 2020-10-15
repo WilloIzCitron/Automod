@@ -2,4 +2,6 @@
 A ExampleAutomod for making automod
 
 ##  How To install
-nothing
+
+```gh repo clone WilloIzCitron/Automod>```
+
