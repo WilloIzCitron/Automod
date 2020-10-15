@@ -3,5 +3,5 @@ A ExampleAutomod for making automod
 
 ##  How To install
 
-```gh repo clone WilloIzCitron/Automod>```
+```gh repo clone WilloIzCitron/Automod```
 
