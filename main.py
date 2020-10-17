@@ -14,6 +14,9 @@ async def on_ready():
     await client.change_presence(status=discord.Status.idle, activity=myAct,)
     print(f'Logged in as: {client.user.name}')
     print(f'With ID: {client.user.id}')
+    ToggleAntibadword.boolean = False
+    ToggleAntiPing.boolean = False
+    ToggleAntiLink.boolean = False
 
 fp  = open('badwords.txt')
 bad_list = [word.strip() for line in fp.readlines() for word in line.split(',') if word.strip()]
@@ -23,6 +26,10 @@ class ToggleAntibadword:
         self.bool=boolean
 
 class ToggleAntiPing:
+    def __init__(self, boolean):
+        self.bool=boolean
+
+class ToggleAntiLink:
     def __init__(self, boolean):
         self.bool=boolean
 
@@ -79,6 +86,28 @@ async def on_message(message):
         else:
             await message.channel.send("You cant use this you needed Admin perm")
 
+    if message.content.startswith('z!toggle_antilink_on'):
+        if message.author.bot == True:
+            return
+        if message.author == client.user:
+            return
+        if message.author.guild_permissions.administrator == True:
+            ToggleAntiLink.boolean = True
+            await message.channel.send("toggle antilink on")
+        else:
+            await message.channel.send("You cant use this you needed Admin perm")
+
+    if message.content.startswith('z!toggle_antilink_off'):
+        if message.author.bot == True:
+            return
+        if message.author == client.user:
+            return
+        if message.author.guild_permissions.administrator == True:
+            ToggleAntiLink.boolean = False
+            await message.channel.send("toggle antilink off")
+        else:
+            await message.channel.send("You cant use this you needed Admin perm")
+
     if message.content.startswith('z!automod'):
         if message.author.bot == True:
             return
@@ -93,9 +122,14 @@ async def on_message(message):
                 statusAntiping = "<:matiaja:754703762865651774>"
             else:
                 statusAntiping = "<:ininyalaasw:754703762869846077>"
+            if ToggleAntiLink.boolean == False  or ToggleAntiLink.boolean == None:
+                statusAntilink = "<:matiaja:754703762865651774>"
+            else:
+                statusAntilink = "<:ininyalaasw:754703762869846077>"
             embed = discord.Embed(title='Automod Status')
             embed.add_field(name='Anti Bad Word', value=str(status))
             embed.add_field(name='Anti Ping', value=str(statusAntiping))
+            embed.add_field(name='Anti Link', value=str(statusAntilink))
             await message.channel.send(embed=embed)
         else:
             await message.channel.send("You cant use this you needed Admin perm")
@@ -116,6 +150,15 @@ async def on_message(message):
             else:
                 await message.channel.send(f"<@{message.author.id}>, dont ping others")
 
+    if "https://" in message.content or "http://" in message.content:
+        if ToggleAntiLink.boolean == False:
+            return
+        else:
+            if author == message.guild.owner_id:
+                return
+            else:
+                await message.delete()
+                await message.channel.send(f"<@{message.author.id}>, dont send link here!")
 
 keep_alive()
 client.run(TOKEN)
