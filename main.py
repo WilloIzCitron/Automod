@@ -160,6 +160,20 @@ async def on_message(message):
                 await message.delete()
                 await message.channel.send(f"<@{message.author.id}>, dont send link here!")
 
+    if message.content.startswith('z!generaterules'):
+        if message.author.bot == True:
+            return
+        if message.author == client.user:
+            return
+        if message.author.guild_permissions.manage_guild == True:
+            if 'rules' in message.channel.name:
+                writerule = open("rules.txt")
+                await message.channel.send(writerule.read())
+            else:
+                await message.channel.send('you arent on rule channel')
+        else:
+            await message.channel.send("You cant use this you need a Manage Server Permission?")
+
 keep_alive()
 client.run(TOKEN)
 
